@@ -43,7 +43,6 @@ installing Kubernetes locally:
 In this demo, we assume Minikube `0.25` with Helm `2.7.2`.
 Make sure to start Minikube (`minikube start --memory=4096`).
 
-
 [[X8]]
 === Installing the Riff Environment with Helm
 
@@ -128,7 +127,8 @@ We will focus on Java in this example. Riff supports three standard Java 8 funct
 * `java.util.function.Function`: returns a value and accepts an argument
 * `java.util.function.Consumer`: does not return a value but does accept an argument.
 
-Let's look at a simple `Function<String,String>`, which both accepts an input argument and produces a reply.
+Let's look at a simple `Function<String,String>`, which both accepts an input argument and
+produces a reply. This is the only one that we will deploy in this article.
 
 .`DemoFunction.java`
 [source,java,indent=0]
@@ -145,63 +145,13 @@ public class DemoFunction implements Function<String, String> {
 }
 ----
 
-A `Supplier`  does not take an argument but does produce a reply.
-
-.`DemoSupplier.java`
-[source,java]
-----
-package mcp;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-import java.util.function.Supplier;
-
-public class DemoSupplier implements Supplier<String> {
-
-	private List<String> kingsBook = Arrays.asList(
-            "YKCOWREBBAJ",
-            "sevot yhtils eht dna,gillirb sawT’",
-            "ebaw eht ni elbmig dna eryg diD",
-            ",sevogorob eht erew ysmim llA",
-            ".ebargtuo shtar emom eht dnA");
-
-	private final Random random = new Random();
-
-	public String get() {
-		int r = random.nextInt() * kingsBook.size();
-		return kingsBook.get(r);
-	}
-}
-----
-
-A `Consumer` does not accept an input argument, but does produce a reply.
-
-.`DemoConsumer.java`
-[source,java]
-----
-package mcp;
-
-import lombok.extern.java.Log;
-
-import java.util.function.Consumer;
-
-@Log
-public class DemoConsumer implements Consumer<String> {
-
-    public void accept(String s) {
-        log.info(s);
-    }
-}
-----
-
 === Executing the function
 
 We will need to create and deploy our function in a container. We can create our own `Dockerfile`,
 service description (`.yaml`) configuration, and container images manually if we wanted to.
 There is no need to, though, as Riff 0.0.3 will do all this for us!
 
-.Deploy the `Function<String,String>`
+.Deploy a function
 [source,script]
 ----
 riff create --name demofn --input reverse-in \
@@ -219,7 +169,7 @@ then create an HTTP request that will be sent to the `reverse-in` topic.
 We tell Riff to wait for a response payload from the input topic with
 the `--reply` parameter.
 
-.`riff-publish.sh`
+.Invoke the function using the `riff` CLI.
 [source,script]
 ----
 riff publish --input reverse-in --data GNIRPS --reply
