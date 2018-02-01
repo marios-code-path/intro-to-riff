@@ -41,6 +41,8 @@ installing Kubernetes locally:
 * https://labs.play-with-k8s.com/[play-with-k8s]
 
 In this demo, we assume Minikube `0.25` with Helm `2.7.2`.
+Make sure to start Minikube (`minikube start --memory=4096`).
+
 
 [[X8]]
 === Installing Riff with Helm 
@@ -49,7 +51,7 @@ If you are on OSX, install Helm with Homebrew:
 
 [source,script,indent=0]
 ----
-brew install Kubernetes-helm
+brew install kubernetes-helm
 ----
 
 If you are on a Linux distribution, or simply want to install things manually on OSX or Windows,
@@ -71,24 +73,23 @@ helm install riffrepo/riff --name demo
 ----
 
 Once this command is complete, you will have a functioning Riff
-environment.  You can enumerate the Riff componenets using this command:
+environment. You can enumerate the Riff componenets using this command:
 
 [source,script,indent=0]
 ----
-kubectl get pods --show-labels -l app=Riff
+kubectl get pods --show-labels -l app=riff
 ----
 
-You'll notice serval pods in service.  The entry point to your functions
-lies at `demo-Riff-http-gateway`.  To ensure it is accepting connections
-from your localhost, enter the following command to enumerate Kubernetes 
-services.
+You'll notice several pods in service. The entry point to your functions
+is `demo-riff-http-gateway`. Enter the following command to enumerate
+Kubernetes services and ensure it is accepting connections from  `localhost`;
 
-[source,scdript,indent=0]
+[source,script,indent=0]
 ----
-kubectl get svc -l app=Riff
+kubectl get svc -l app=riff
 ----
 
-Check that `demo-Riff-http-gateway` has a `TYPE` of `NodePort`.
+Check that `demo-riff-http-gateway` has a `TYPE` of `NodePort`.
 
 **********************************************************************
 If your Riff-http-gateway says that EXTERNAL-IP is Pending and fails
@@ -97,7 +98,7 @@ service type.
 
 [source,script,indent=0]
 ----
-kubectl edit service demo-Riff-http-gateway
+kubectl edit service demo-riff-http-gateway
 ----
 Update the `type` field from `LoadBalancer` to `NodePort`, and save.
 This will expose your Riff-http-gateway to the local network.
@@ -110,22 +111,19 @@ environtment.
 [[X9]]
 === Writing the Function.
 
+Riff maintains a registry of functions. These functions can optionally accept payloads as requests
+and optionally produce replies. Riff will forward requests to your functions and deliver replies
+from your functions over message channels. Messages originate from a number of different sources:
+HTTP, Kafka, RabbitMQ, etc. As of this writing, only HTTP is supported.
 
-Riff maintains a registry of functions. These functions expect payloads.
-Riff will forward requests to your functions and deliver replies 
-from your functions over message channels. You can originate messages
-into your channels from a number of different sources: HTTP, Kafka, RabbitMQ,
-etc. As of this writing, only HTTP is supported.
-
-At the moment, Riff supports the following languages and runtimes:
-Python, Node.js, `/bin/bash`, and Java. We will focus on Java in this
-example.
-
-Riff supports three standard Java 8 functional interfaces:
+At the moment, Riff supports the following languages and runtimes: Python, Node.js, `/bin/bash`, and Java.
+We will focus on Java in this example. Riff supports three standard Java 8 functional interfaces:
 
 * `java.util.function.Supplier`: returns a value but does not take an argument
 * `java.util.function.Function`: returns a value and accepts an argument
 * `java.util.function.Consumer`: does not return a value but does accept an argument.
+
+Let's look at a simple `Function<String,String>`, which both accepts an input argument and produces a reply.
 
 .`DemoFunction.java`
 [source,java,indent=0]
@@ -142,8 +140,7 @@ public class DemoFunction implements Function<String, String> {
 }
 ----
 
-Riff supports another functional type called a `Supplier`,
-which does not take an argument, but returns a value.
+A `Supplier`  does not take an argument but does produce a reply.
 
 .`DemoSupplier.java`
 [source,java]
@@ -173,7 +170,7 @@ public class DemoSupplier implements Supplier<String> {
 }
 ----
 
-Add the Consumer.
+A `Consumer` does not accept an input argument, but does produce a reply.
 
 .`DemoConsumer.java`
 [source,java]
@@ -195,15 +192,15 @@ public class DemoConsumer implements Consumer<String> {
 
 === Executing the function
 
-We will need to create and deploy our function as containers.
-We can create our own `Dockerfile`, service description (`.yaml`) configuration,
-and container images manually. Conveniently, Riff 0.0.3 will do all this for us!
+We will need to create and deploy our function in a container. We can create our own `Dockerfile`,
+service description (`.yaml`) configuration, and container images manually if we wanted to.
+There is no need to, though, as Riff 0.0.3 will do all this for us!
 
-.Create the `Supplier`
+.Deploy the `Function<String,String>`
 [source,script]
 ----
-riff create --name demofn --input reverse-in\
-    --protocol pipes --artifact target/demofn-0.0.1.jar\
+riff create --name demofn --input reverse-in \
+    --protocol pipes --artifact target/demofn-0.0.1.jar \
     --handler mcp.DemoFunction
 ----
 
