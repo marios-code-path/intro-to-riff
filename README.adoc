@@ -160,7 +160,7 @@ riff create --name demofn --input reverse-in \
 ----
 
 This command creates a function. You specify the input and output topics, a fully
-qualified classname and method, and the artifact (.jar) that contains the class.
+qualified classname and method, and the artifact (the `.jar`) that contains the class.
 Your topics are logical names for pipes that conduct requests and replies between
 functions.
 
@@ -178,3 +178,12 @@ riff publish --input reverse-in --data GNIRPS --reply
 Riff will publish 'GNIRPS' data to the 'reverse-in' topic. By 
 specifying `--reply` in the riff command, we are requesting that riff 
 await for retured data to print to the console.
+
+=== Next Steps
+
+We've only begun to scratch the surface in this look at Project Riff. It would be worth in another
+installment looking at using some of the other types of functions - `Consumer`s and `Supplier`s -
+and look at when and how they're used. In another installment we could
+look at how functions connect with each other. In another installment, we could look at how
+function-capable frameworks like https://cloud.spring.io/spring-cloud-function/[Spring Cloud Function] work
+in the Riff environment.
