@@ -123,8 +123,8 @@ HTTP, Kafka, RabbitMQ, etc. As of this writing, only HTTP is supported.
 At the moment, Riff supports the following languages and runtimes: Python, Node.js, `/bin/bash`, and Java.
 We will focus on Java in this example. Riff supports three standard Java 8 functional interfaces:
 
-* `java.util.function.Supplier`: returns a value but does not take an argument
-* `java.util.function.Function`: returns a value and accepts an argument
+* `java.util.function.Supplier`: returns a value but does not accept an argument
+* `java.util.function.Function`: returns a value and does accept an argument
 * `java.util.function.Consumer`: does not return a value but does accept an argument.
 
 Let's look at a simple `Function<String,String>`, which both accepts an input argument and
