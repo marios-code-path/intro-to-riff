@@ -61,7 +61,7 @@ Then, add the Helm chart for Riff:
 
 [source,script,indent=0]
 ----
-helm repo add riffrepo https://Riff-charts.storage.googleapis.com
+helm repo add riffrepo https://riff-charts.storage.googleapis.com
 helm repo update
 ----
 
@@ -92,7 +92,7 @@ kubectl get svc -l app=riff
 Check that `demo-riff-http-gateway` has a `TYPE` of `NodePort`.
 
 **********************************************************************
-If your Riff-http-gateway says that EXTERNAL-IP is Pending and fails
+If your riff-http-gateway says that EXTERNAL-IP is Pending and fails
 to resolve after several minutes, then you may need to change the 
 service type.
 
@@ -101,7 +101,7 @@ service type.
 kubectl edit service demo-riff-http-gateway
 ----
 Update the `type` field from `LoadBalancer` to `NodePort`, and save.
-This will expose your Riff-http-gateway to the local network.
+This will expose your riff-http-gateway to the local network.
 
 Additional networking configuration may be necessary as you might 
 have subnetting/firewalls in place, especailly in a controlled 
