@@ -222,14 +222,9 @@ the `--reply` parameter.
 .`riff-publish.sh`
 [source,script]
 ----
-riff publish --input reverse-in --data OIRAM --reply
+riff publish --input reverse-in --data GNIRPS --reply
 ----
 
-Ultimately, the `Riff publish` comand issues an HTTP request to a REST API.
-You can do the same thing with any standard HTTP client such as `curl`.
-
-.`riff-curl.sh`
-[source,script]
-----
-curl -H Content-Type: text/plain http://192.168.99.100:30101/messages/demoinput -d OIRAM
-----
+The function will accept data 'GNIRPS', and send it's revers 
+to the reverse-in request queue.  By specifying `--reply` in the
+riff command, we are requesting that riff await for return data.
