@@ -14,7 +14,7 @@ public class DemoSupplier implements Supplier<String> {
 			",sevogorob eht erew ysmim llA",
 			".ebargtuo shtar emom eht dnA");
 
-	private Random random = new Random();
+	private final Random random = new Random();
 
 	public String get() {
 		int r = random.nextInt() * kingsBook.size();

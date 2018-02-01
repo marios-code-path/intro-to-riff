@@ -1,66 +1,70 @@
-= Introduction to the Project RIFF Funcctions-as-a-Service Platform
+= Introduction to the Project Riff Funcctions-as-a-Service Platform
 
 Mario Gray <mgray@pivotal.io>
 :Author Initials: MVG
 :toc:
 :icons:
 :numbered:
-:website: https://github.com/projectriff/riff=
+:website: https://github.com/projectRiff/Riff=
 
 
 === Motivation
 Functions as a Service are a new paradigm for application composition and deployment.
 Functions are a smaller deployable unit than microservices or traditional monoliths.
 
-https://projectriff.io/[Project riff] is a new Pivotal project that runs functions in a 
-cloud environment such as Pivotal Container Services (kubernetes).
+https://projectRiff.io/[Project Riff] is a new Pivotal project that runs functions in a 
+cloud environment like Pivotal Container Services (Kubernetes).
 
-Lets get started by setting up a new RiFF environment and then creating some functions.
+Lets get started by setting up a new Riff environment and then creating some functions.
 
-.Bootstrapping
+.Navigating uncharted waters with Helm
 **********************************************************************
-All of the steps to manually prepare the environment locally are
-outlined in the https://github.com/projectriff/riff[Riff Github Repo].
 
-Riff provides helm charts to ease installation and migration. Helm
-is a package manager for Kubernetes. You may want to consider it,
-especially in a controlled environment such as a desktop or a laptop. 
+All of the steps to manually prepare the environment locally are
+outlined in the https://github.com/projectRiff/Riff[Riff Github Repo].
+
+Helm is a package manager for Kubernetes. Riff provides helm packages
+- Helm "charts" - to ease installation and migration.
 
 For further information on installing Helm, refer to the project's 
 https://docs.helm.sh/using_helm/#from-script[Installation guide].
+
 **********************************************************************
 
 [[X7]]
 == Preparing the environment
 Either use an existing Kubernetes environement, or check out these 
 tools that provide a useful (but not complete!) alternative to
-installing kubernetes locally:
+installing Kubernetes locally:
 
-* https://www.katacoda.com/courses/kubernetes/playground[katacode]
+* https://www.katacoda.com/courses/Kubernetes/playground[katacode]
 * https://labs.play-with-k8s.com/[play-with-k8s]
 
-In this demo, I am assuming Minikube `0.25` with Helm `2.7.2`.
-The simplest way to get Helm installed is via package manager such as
-`homebrew` or `apt`.
+In this demo, we assume Minikube `0.25` with Helm `2.7.2`.
 
 [[X8]]
 === Installing Riff with Helm 
 
-Install Helm via Homebrew:
+If you are on OSX, install Helm with Homebrew:
+
 [source,script,indent=0]
 ----
-brew install kubernetes-helm
-apt-get install 
+brew install Kubernetes-helm
 ----
 
-Add the Helm chart for RIFF:
+If you are on a Linux distribution, or simply want to install things manually on OSX or Windows,
+follow https://github.com/Kubernetes/helm[the instructions for Helm].
+
+Then, add the Helm chart for Riff:
+
 [source,script,indent=0]
 ----
-helm repo add riffrepo https://riff-charts.storage.googleapis.com
+helm repo add riffrepo https://Riff-charts.storage.googleapis.com
 helm repo update
 ----
 
-Install RIFF with the release name `demo`:
+Install Riff with the release name `demo`:
+
 [source,script,indent=0]
 ----
 helm install riffrepo/riff --name demo
@@ -71,32 +75,32 @@ environment.  You can enumerate the Riff componenets using this command:
 
 [source,script,indent=0]
 ----
-kubectl get pods --show-labels -l app=riff
+kubectl get pods --show-labels -l app=Riff
 ----
 
 You'll notice serval pods in service.  The entry point to your functions
-lies at `demo-riff-http-gateway`.  To ensure it is accepting connections
-from your localhost, enter the following command to enumerate kubernetes 
+lies at `demo-Riff-http-gateway`.  To ensure it is accepting connections
+from your localhost, enter the following command to enumerate Kubernetes 
 services.
 
 [source,scdript,indent=0]
 ----
-kubectl get svc -l app=riff
+kubectl get svc -l app=Riff
 ----
 
-Check that `demo-riff-http-gateway` has a `TYPE` of `NodePort`.
+Check that `demo-Riff-http-gateway` has a `TYPE` of `NodePort`.
 
 **********************************************************************
-If your riff-http-gateway says that EXTERNAL-IP is Pending and fails
+If your Riff-http-gateway says that EXTERNAL-IP is Pending and fails
 to resolve after several minutes, then you may need to change the 
 service type.
 
 [source,script,indent=0]
 ----
-kubectl edit service demo-riff-http-gateway
+kubectl edit service demo-Riff-http-gateway
 ----
 Update the `type` field from `LoadBalancer` to `NodePort`, and save.
-This will expose your riff-http-gateway to the local network.
+This will expose your Riff-http-gateway to the local network.
 
 Additional networking configuration may be necessary as you might 
 have subnetting/firewalls in place, especailly in a controlled 
@@ -160,7 +164,7 @@ public class DemoSupplier implements Supplier<String> {
             ",sevogorob eht erew ysmim llA",
             ".ebargtuo shtar emom eht dnA");
 
-	private Random random = new Random();
+	private final Random random = new Random();
 
 	public String get() {
 		int r = random.nextInt() * kingsBook.size();
@@ -209,20 +213,20 @@ Your topics are logical names for pipes that conduct requests and replies betwee
 functions.
 
 The following command will locate your `riff-http-gateway`'s IP and port,
-then create an HTTP request that will be sent to the `demoinput` topic.
-We tell riff to wait for a response payload from the input topic with
+then create an HTTP request that will be sent to the `reverse-in` topic.
+We tell Riff to wait for a response payload from the input topic with
 the `--reply` parameter.
 
-.riff-publish.sh
+.`riff-publish.sh`
 [source,script]
 ----
-riff publish --input demoinput  --data OIRAM --reply
+riff publish --input reverse-in --data OIRAM --reply
 ----
 
-Ultimately, the `riff publish` comand issues an HTTP request to a REST API.
+Ultimately, the `Riff publish` comand issues an HTTP request to a REST API.
 You can do the same thing with any standard HTTP client such as `curl`.
 
-.riff-curl.sh
+.`riff-curl.sh`
 [source,script]
 ----
 curl -H Content-Type: text/plain http://192.168.99.100:30101/messages/demoinput -d OIRAM
