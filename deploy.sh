@@ -8,6 +8,9 @@ DEMO_VERSION=0.0.1
 
 export DEMO_VERSION
 
+rm -f *.yaml
+rm -f Dockerfile
+
 function exitfn {
 	MSG=$1; shift
 	echo >&2 ${MSG}
@@ -87,16 +90,6 @@ eval $(minikube docker-env)
 
 DEMO_JAR=target/demofn-${DEMO_VERSION}.jar
 
-riff create --name democonsumer --input reverse-out\
-    --protocol pipes --artifact ${DEMO_JAR}\
-    --handler mcp.DemoConsumer
-
 riff create --name demofn --input reverse-in\
-    --output reverse-out\
     --protocol pipes --artifact ${DEMO_JAR}\
     --handler mcp.DemoFunction
-
-riff create --name demosupplier --input supplier\
-    --output reverse-in --protocol pipes\
-    --artifact ${DEMO_JAR}\
-    --handler mcp.DemoSupplier
