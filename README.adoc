@@ -1,0 +1,226 @@
+Deploying Functions as Eventable Services with RIFF [hint :RIFF Is For Functions]
+=================================================================================
+Mario Gray <mgray@pivotal.io>
+:Author Initials: MVG
+:toc:
+:icons:
+:numbered:
+:website: https://github.com/projectriff/riff=
+:demofndir: demofn 
+:springfndir: /riffaas/springfn
+
+Motivation
+~~~~~~~~~~
+Functions as a Service are a new paradigm for application composition and deployment.
+Functions are a smaller deployable unit than microservices or traditional monoliths.
+
+https://projectriff.io/[Project riff] is a new Pivotal project that runs functions in a 
+cloud environment such as Pivotal Container Services (kubernetes).
+
+Lets get started by setting up a new RiFF environment and then creating some functions.
+
+.Bootstrapping
+**********************************************************************
+All of the steps to manually prepare the environment locally are
+outlined in the https://github.com/projectriff/riff[Riff Github Repo].
+
+Riff provides helm charts to ease installation and migration. Helm
+is a package manager for Kubernetes. You may want to consider it,
+especially in a controlled environment such as a desktop or a laptop. 
+
+For further information on installing Helm, refer to the project's 
+https://docs.helm.sh/using_helm/#from-script[Installation guide].
+**********************************************************************
+
+[[X7]]
+== Preparing the environment
+Either use an existing Kubernetes environement, or check out these 
+tools that provide a useful (but not complete!) alternative to
+installing kubernetes locally:
+
+* https://www.katacoda.com/courses/kubernetes/playground[katacode]
+* https://labs.play-with-k8s.com/[play-with-k8s]
+
+In this demo, I am assuming Minikube `0.25` with Helm `2.7.2`.
+The simplest way to get Helm installed is via package manager such as
+`homebrew` or `apt`.
+
+[[X8]]
+=== Installing Riff with Helm 
+
+Install Helm via Homebrew:
+[source,script,indent=0]
+----
+brew install kubernetes-helm
+apt-get install 
+----
+
+Add the Helm chart for RIFF:
+[source,script,indent=0]
+----
+helm repo add riffrepo https://riff-charts.storage.googleapis.com
+helm repo update
+----
+
+Install RIFF with the release name `demo`:
+[source,script,indent=0]
+----
+helm install riffrepo/riff --name demo
+----
+
+Once this command is complete, you will have a functioning Riff
+environment.  You can enumerate the Riff componenets using this command:
+
+[source,script,indent=0]
+----
+kubectl get pods --show-labels -l app=riff
+----
+
+You'll notice serval pods in service.  The entry point to your functions
+lies at `demo-riff-http-gateway`.  To ensure it is accepting connections
+from your localhost, enter the following command to enumerate kubernetes 
+services.
+
+[source,scdript,indent=0]
+----
+kubectl get svc -l app=riff
+----
+
+Check that `demo-riff-=http-gateway` has a `TYPE` of `NodePort`.
+
+**********************************************************************
+If your riff-http-gateway says that EXTERNAL-IP is Pending and fails
+to resolve after several minutes, then you may need to change the 
+service type.
+
+[source,script,indent=0]
+----
+kubectl edit service demo-riff-http-gateway
+----
+Update the `type` field from `LoadBalancer` to `NodePort`, and save.
+This will expose your riff-http-gateway to the local network.
+
+Additional networking configuration may be necessary as you might 
+have subnetting/firewalls in place, especailly in a controlled 
+environtment.
+**********************************************************************
+
+[[X9]]
+=== Writing the Function.
+
+
+Riff maintains a registry of functions. These functions expect payloads.
+Riff will forward requests to your functions and deliver replies 
+from your functions over message channels. You can originate messages
+into your channels from a number of different sources: HTTP, Kafka, RabbitMQ,
+etc. As of this writing, only HTTP is supported.
+
+At the moment, Riff supports the following languages and runtimes:
+Python, Node.js, `/bin/bash`, and Java. We will focus on Java in this
+example.
+
+Riff supports three standard Java 8 functional interfaces:
+
+* `java.util.function.Supplier`
+* `java.util.function.Function`
+* `java.util.function.Consumer`
+
+.DemoFunction.java
+[source,java,indent=0]
+----
+package com.codepub.demo;
+
+import java.util.function.Function;
+
+public class DemoFunction implements Function<String, String> {
+
+    public String apply(String s) {
+        return new StringBuilder(s).reverse().toString();
+    }
+}
+----
+
+Riff Supports another functional type called the supplier.
+
+.DemoSupplier.java
+[source,java]
+----
+import java.util.List;
+import java.util.function.Supplier;
+
+public class DemoSupplier implements Supplier<String> {
+    public String get() {
+        return kingsBook.get(
+                (int)Math.random()*kingsBook.size()
+        );
+    }
+
+    List<String> kingsBook = Arrays.asList(new String[]{
+            "YKCOWREBBAJ",
+            "sevot yhtils eht dna,gillirb sawT’",
+            "ebaw eht ni elbmig dna eryg diD",
+            ",sevogorob eht erew ysmim llA",
+            ".ebargtuo shtar emom eht dnA"
+    });
+}
+---- 
+
+Add the Consumer.
+
+.DemoConsumer.java
+[source,java]
+----
+package com.codepub.demo;
+
+import lombok.extern.java.Log;
+
+import java.util.function.Consumer;
+
+@Log
+public class DemoConsumer implements Consumer<String> {
+
+    public void accept(String s) {
+        log.info(s);
+    }
+}
+----
+
+=== Executing the function
+
+We will need to create and deploy your function containers.
+We can create our own `Dockerfile`, service description (.yaml)
+and container image manually.  Conveniently, Riff .0.0.3 will
+do all this for us!
+
+.Create the `Supplier`
+[source,script]
+----
+riff create --name demofn --input reverse-in\
+    --protocol pipes --artifact target/demofn-0.0.1.jar\
+    --handler com.codepub.demo.DemoFunction
+----
+
+This command creates a function.  You specify the input and output topics, a fully
+qualified classname and method, and the artifact (.jar) that contains the class.
+Your topics are logical names for pipes that conduct requests and replies between
+functions.
+
+The following command will locate your `riff-http-gateway`'s IP and port,
+then create an HTTP request that will be sent to the `demoinput` topic.
+We tell riff to wait for a response payload from the input topic with
+the `--reply` parameter.
+
+.riff-publish.sh
+[source,script]
+----
+riff publish --input demoinput  --data OIRAM --reply
+----
+
+Ultimately, the `riff publish` comand issues an HTTP request to a REST API.
+You can do the same thing with any standard HTTP client such as `curl`.
+
+.riff-curl.sh
+[source,script]
+----
+curl -H Content-Type: text/plain http://192.168.99.100:30101/messages/demoinput -d OIRAM
+----
