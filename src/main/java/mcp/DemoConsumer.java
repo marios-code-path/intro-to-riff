@@ -1,4 +1,4 @@
-package com.codepub.demo;
+package mcp;
 
 import lombok.extern.java.Log;
 

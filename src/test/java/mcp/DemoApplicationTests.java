@@ -1,8 +1,8 @@
-package com.codepub.test;
+package mcp;
 
-import com.codepub.demo.DemoConsumer;
-import com.codepub.demo.DemoFunction;
-import com.codepub.demo.DemoSupplier;
+import mcp.DemoConsumer;
+import mcp.DemoFunction;
+import mcp.DemoSupplier;
 import org.assertj.core.api.Assertions;
 import org.junit.Rule;
 import org.junit.Test;

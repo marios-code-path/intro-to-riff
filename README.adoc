@@ -1,16 +1,14 @@
-Deploying Functions as Eventable Services with RIFF [hint :RIFF Is For Functions]
-=================================================================================
+= Introduction to the Project RIFF Funcctions-as-a-Service Platform
+
 Mario Gray <mgray@pivotal.io>
 :Author Initials: MVG
 :toc:
 :icons:
 :numbered:
 :website: https://github.com/projectriff/riff=
-:demofndir: demofn 
-:springfndir: /riffaas/springfn
 
-Motivation
-~~~~~~~~~~
+
+=== Motivation
 Functions as a Service are a new paradigm for application composition and deployment.
 Functions are a smaller deployable unit than microservices or traditional monoliths.
 
@@ -86,7 +84,7 @@ services.
 kubectl get svc -l app=riff
 ----
 
-Check that `demo-riff-=http-gateway` has a `TYPE` of `NodePort`.
+Check that `demo-riff-http-gateway` has a `TYPE` of `NodePort`.
 
 **********************************************************************
 If your riff-http-gateway says that EXTERNAL-IP is Pending and fails
@@ -121,14 +119,14 @@ example.
 
 Riff supports three standard Java 8 functional interfaces:
 
-* `java.util.function.Supplier`
-* `java.util.function.Function`
-* `java.util.function.Consumer`
+* `java.util.function.Supplier`: returns a value but does not take an argument
+* `java.util.function.Function`: returns a value and accepts an argument
+* `java.util.function.Consumer`: does not return a value but does accept an argument.
 
-.DemoFunction.java
+.`DemoFunction.java`
 [source,java,indent=0]
 ----
-package com.codepub.demo;
+package mcp;
 
 import java.util.function.Function;
 
@@ -140,37 +138,43 @@ public class DemoFunction implements Function<String, String> {
 }
 ----
 
-Riff Supports another functional type called the supplier.
+Riff supports another functional type called a `Supplier`,
+which does not take an argument, but returns a value.
 
-.DemoSupplier.java
+.`DemoSupplier.java`
 [source,java]
 ----
+package mcp;
+
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.function.Supplier;
 
 public class DemoSupplier implements Supplier<String> {
-    public String get() {
-        return kingsBook.get(
-                (int)Math.random()*kingsBook.size()
-        );
-    }
 
-    List<String> kingsBook = Arrays.asList(new String[]{
+	private List<String> kingsBook = Arrays.asList(
             "YKCOWREBBAJ",
             "sevot yhtils eht dna,gillirb sawT’",
             "ebaw eht ni elbmig dna eryg diD",
             ",sevogorob eht erew ysmim llA",
-            ".ebargtuo shtar emom eht dnA"
-    });
+            ".ebargtuo shtar emom eht dnA");
+
+	private Random random = new Random();
+
+	public String get() {
+		int r = random.nextInt() * kingsBook.size();
+		return kingsBook.get(r);
+	}
 }
----- 
+----
 
 Add the Consumer.
 
-.DemoConsumer.java
+.`DemoConsumer.java`
 [source,java]
 ----
-package com.codepub.demo;
+package mcp;
 
 import lombok.extern.java.Log;
 
@@ -187,20 +191,19 @@ public class DemoConsumer implements Consumer<String> {
 
 === Executing the function
 
-We will need to create and deploy your function containers.
-We can create our own `Dockerfile`, service description (.yaml)
-and container image manually.  Conveniently, Riff .0.0.3 will
-do all this for us!
+We will need to create and deploy our function as containers.
+We can create our own `Dockerfile`, service description (`.yaml`) configuration,
+and container images manually. Conveniently, Riff 0.0.3 will do all this for us!
 
 .Create the `Supplier`
 [source,script]
 ----
 riff create --name demofn --input reverse-in\
     --protocol pipes --artifact target/demofn-0.0.1.jar\
-    --handler com.codepub.demo.DemoFunction
+    --handler mcp.DemoFunction
 ----
 
-This command creates a function.  You specify the input and output topics, a fully
+This command creates a function. You specify the input and output topics, a fully
 qualified classname and method, and the artifact (.jar) that contains the class.
 Your topics are logical names for pipes that conduct requests and replies between
 functions.
