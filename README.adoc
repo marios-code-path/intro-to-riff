@@ -227,4 +227,4 @@ riff publish --input reverse-in --data GNIRPS --reply
 
 Riff will publish 'GNIRPS' data to the 'reverse-in' topic. By 
 specifying `--reply` in the riff command, we are requesting that riff 
-await for return data.
+await for retured data to print to the console.
