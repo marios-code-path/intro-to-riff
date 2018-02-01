@@ -225,6 +225,6 @@ the `--reply` parameter.
 riff publish --input reverse-in --data GNIRPS --reply
 ----
 
-The function will accept data 'GNIRPS', and send it's revers 
-to the reverse-in request queue.  By specifying `--reply` in the
-riff command, we are requesting that riff await for return data.
+Riff will publish 'GNIRPS' data to the 'reverse-in' topic. By 
+specifying `--reply` in the riff command, we are requesting that riff 
+await for return data.
