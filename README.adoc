@@ -61,7 +61,7 @@ Then, add the Helm chart for Riff:
 
 [source,script,indent=0]
 ----
-helm repo add riffrepo https://Riff-charts.storage.googleapis.com
+helm repo add riffrepo https://riff-charts.storage.googleapis.com
 helm repo update
 ----
 
@@ -101,7 +101,7 @@ service type.
 kubectl edit service demo-riff-http-gateway
 ----
 Update the `type` field from `LoadBalancer` to `NodePort`, and save.
-This will expose your Riff-http-gateway to the local network.
+This will expose your riff-http-gateway to the local network.
 
 Additional networking configuration may be necessary as you might 
 have subnetting/firewalls in place, especailly in a controlled 
@@ -112,8 +112,8 @@ environtment.
 
 In order to use Riff, you'll need the `riff` command line client interface (CLI).
 Clone https://github.com/projectRiff/Riff[the `git` repository] and add it to your `PATH`.
+Now you can use `riff` in the shell.
 
-[[X9]]
 === Writing the Function.
 
 Riff maintains a registry of functions. These functions can optionally accept payloads as requests
