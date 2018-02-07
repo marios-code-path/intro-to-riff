@@ -44,7 +44,7 @@ Make sure to start Minikube (`minikube start --memory=4096`).
 [[X8]]
 === Installing the Riff Environment with Helm
 
-If you are on OSX, install Helm with Homebrew:
+If you are on OSX, or due to preference install Helm with Homebrew:
 
 [source,script,indent=0]
 ----
@@ -79,7 +79,7 @@ kubectl get pods --show-labels -l app=riff
 
 You'll notice several pods in service. The entry point to your functions
 is `demo-riff-http-gateway`. Enter the following command to enumerate
-Kubernetes services and ensure it is accepting connections from  `localhost`;
+Kubernetes services and ensure it is accepting connections from `localhost`;
 
 [source,script,indent=0]
 ----
@@ -116,7 +116,8 @@ Now you can use `riff` in the shell.
 Riff maintains a registry of functions. These functions can optionally accept payloads as requests
 and optionally produce replies. Riff will forward requests to your functions and deliver replies
 from your functions over message channels. Messages originate from a number of different sources:
-HTTP, Kafka, RabbitMQ, etc. As of this writing, only HTTP is supported.
+HTTP, Kafka, RabbitMQ, etc. As of this writing, while message payloads are routed through Kafka 
+topics, communication to the front-end of Riff take HTTP requests only.
 
 At the moment, Riff supports the following languages and runtimes: Python, Node.js, `/bin/bash`, and Java.
 We will focus on Java in this example. Riff supports three standard Java 8 functional interfaces:
