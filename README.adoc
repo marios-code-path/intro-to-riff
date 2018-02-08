@@ -31,15 +31,16 @@ https://docs.helm.sh/using_helm/#from-script[Installation guide].
 
 [[X7]]
 == Preparing the environment
-Either use an existing Kubernetes environement, or check out these 
-tools that provide a useful (but not complete!) alternative to
-installing Kubernetes locally:
+`minikube` is the tool that we'll use to run Kubernetes locally. 
+In this demo, we assume a configuration containing Minikube `0.25` 
+and Helm/tiller `2.7.2`. Make sure to start Minikube:
 
-* https://www.katacoda.com/courses/Kubernetes/playground[katacode]
-* https://labs.play-with-k8s.com/[play-with-k8s]
-
-In this demo, we assume Minikube `0.25` with Helm `2.7.2`.
-Make sure to start Minikube (`minikube start --memory=4096`).
+[source,script,indent=0]
+----
+   minikube start \
+     --memory=4096 \
+     --cpus=2
+----
 
 [[X8]]
 === Installing the Riff Environment with Helm
