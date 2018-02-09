@@ -35,23 +35,22 @@ and Helm/tiller `2.7.2`. Make sure to start Minikube:
 
 [source,script,indent=0]
 ----
-   minikube start \
-     --memory=4096 \
-     --cpus=2
+  minikube start \
+    --memory=4096 \
+    --cpus=2
 ----
 
 [[X8]]
 === Installing the Riff Environment with Helm
 
-If you are on OSX, or due to preference install Helm with Homebrew:
-
+Homebrew can be used to install helm in a jiffy:
 [source,script,indent=0]
 ----
 brew install kubernetes-helm
 ----
 
-If you are on a Linux distribution, or simply want to install things manually on OSX or Windows,
-follow https://github.com/Kubernetes/helm[the instructions for Helm].
+Linux and Windows users may use alternative methods, or your simply want
+to install things manually on OSX, follow https://github.com/Kubernetes/helm[the instructions for Helm].
 
 Then, add the Helm chart for Riff:
 
@@ -137,10 +136,9 @@ package mcp;
 import java.util.function.Function;
 
 public class DemoFunction implements Function<String, String> {
-
-    public String apply(String s) {
-        return new StringBuilder(s).reverse().toString();
-    }
+  public String apply(String s) {
+    return new StringBuilder(s).reverse().toString();
+  }
 }
 ----
 
@@ -154,8 +152,8 @@ There is no need to, though, as Riff 0.0.3 will do all this for us!
 [source,script]
 ----
 riff create --name demofn --input reverse-in \
-    --protocol pipes --artifact target/demofn-0.0.1.jar \
-    --handler mcp.DemoFunction
+  --protocol pipes --artifact target/demofn-0.0.1.jar \
+  --handler mcp.DemoFunction
 ----
 
 This command creates a function. You specify the input and output topics, a fully
