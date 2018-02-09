@@ -13,15 +13,15 @@ traditional monoliths. https://projectRiff.io/[Project Riff] is a new Pivotal pr
 that runs functions in a cloud environment like Pivotal Container Services (Kubernetes).
 Lets get started by setting up a new Riff environment and then creating some functions.
 
-
 [Tip]
 ====
 .Navigating uncharted waters with Helm
+
 All of the steps to manually prepare the environment locally are
 outlined in the https://github.com/projectRiff/Riff[Riff Github Repo].
 
 Helm is a package manager for Kubernetes. Riff provides helm packages
-- Helm "charts" - to ease installation and migration.
+( Helm "charts" ) to ease installation and migration.
 
 For further information on installing Helm, refer to the project's 
 https://docs.helm.sh/using_helm/#from-script[Installation guide].
