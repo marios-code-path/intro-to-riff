@@ -29,11 +29,8 @@ and Helm/tiller `2.7.2`. Make sure to start Minikube:
 ==== Navigating uncharted waters with Helm
 All of the steps to manually prepare the environment locally are
 outlined in the https://github.com/projectRiff/Riff[Riff Github Repo].
-
 Helm is a package manager for Kubernetes. Riff provides helm packages
-( Helm "charts" ) to ease installation and migration.
-
-For further information on installing Helm, refer to the project's 
+( Helm "charts" ) to ease installation and migration. For further information on installing Helm, refer to the project's 
 https://docs.helm.sh/using_helm/#from-script[Installation guide].
 
 [[X8]]
