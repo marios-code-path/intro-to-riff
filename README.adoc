@@ -8,16 +8,15 @@ Mario Gray <mgray@pivotal.io>
 
 === Motivation
 Functions as a Service are a new paradigm for application composition and deployment.
-Functions are a smaller deployable unit than microservices or traditional monoliths.
-
-https://projectRiff.io/[Project Riff] is a new Pivotal project that runs functions in a 
-cloud environment like Pivotal Container Services (Kubernetes).
-
+Functions are a smaller deployable unit than microservices and especially
+traditional monoliths. https://projectRiff.io/[Project Riff] is a new Pivotal project
+that runs functions in a cloud environment like Pivotal Container Services (Kubernetes).
 Lets get started by setting up a new Riff environment and then creating some functions.
 
-.Navigating uncharted waters with Helm
-**********************************************************************
 
+[Tip]
+====
+.Navigating uncharted waters with Helm
 All of the steps to manually prepare the environment locally are
 outlined in the https://github.com/projectRiff/Riff[Riff Github Repo].
 
@@ -26,8 +25,7 @@ Helm is a package manager for Kubernetes. Riff provides helm packages
 
 For further information on installing Helm, refer to the project's 
 https://docs.helm.sh/using_helm/#from-script[Installation guide].
-
-**********************************************************************
+====
 
 [[X7]]
 == Preparing the environment
@@ -88,10 +86,11 @@ kubectl get svc -l app=riff
 ----
 
 Check that `demo-riff-http-gateway` has a `TYPE` of `NodePort`.
-
-**********************************************************************
+[Tip]
+====
+.Choosing the right service type for your env.
 If your riff-http-gateway says that EXTERNAL-IP is Pending and fails
-to resolve after several minutes, then you may need to change the 
+to resolve after several minutes, then you will need to change the 
 service type.
 
 [source,script,indent=0]
@@ -104,7 +103,7 @@ This will expose your riff-http-gateway to the local network.
 Additional networking configuration may be necessary as you might 
 have subnetting/firewalls in place, especailly in a controlled 
 environtment.
-**********************************************************************
+====
 
 === Installing the Riff Client
 
