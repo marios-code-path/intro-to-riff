@@ -13,20 +13,6 @@ traditional monoliths. https://projectRiff.io/[Project Riff] is a new Pivotal pr
 that runs functions in a cloud environment like Pivotal Container Services (Kubernetes).
 Lets get started by setting up a new Riff environment and then creating some functions.
 
-[Tip]
-====
-.Navigating uncharted waters with Helm
-
-All of the steps to manually prepare the environment locally are
-outlined in the https://github.com/projectRiff/Riff[Riff Github Repo].
-
-Helm is a package manager for Kubernetes. Riff provides helm packages
-( Helm "charts" ) to ease installation and migration.
-
-For further information on installing Helm, refer to the project's 
-https://docs.helm.sh/using_helm/#from-script[Installation guide].
-====
-
 [[X7]]
 == Preparing the environment
 `minikube` is the tool that we'll use to run Kubernetes locally. 
@@ -39,6 +25,16 @@ and Helm/tiller `2.7.2`. Make sure to start Minikube:
     --memory=4096 \
     --cpus=2
 ----
+
+==== Navigating uncharted waters with Helm
+All of the steps to manually prepare the environment locally are
+outlined in the https://github.com/projectRiff/Riff[Riff Github Repo].
+
+Helm is a package manager for Kubernetes. Riff provides helm packages
+( Helm "charts" ) to ease installation and migration.
+
+For further information on installing Helm, refer to the project's 
+https://docs.helm.sh/using_helm/#from-script[Installation guide].
 
 [[X8]]
 === Installing the Riff Environment with Helm
@@ -85,9 +81,9 @@ kubectl get svc -l app=riff
 ----
 
 Check that `demo-riff-http-gateway` has a `TYPE` of `NodePort`.
-[Tip]
-====
-.Choosing the right service type for your env.
+
+==== Choosing the right service type for your environment.
+
 If your riff-http-gateway says that EXTERNAL-IP is Pending and fails
 to resolve after several minutes, then you will need to change the 
 service type.
@@ -102,7 +98,6 @@ This will expose your riff-http-gateway to the local network.
 Additional networking configuration may be necessary as you might 
 have subnetting/firewalls in place, especailly in a controlled 
 environtment.
-====
 
 === Installing the Riff Client
 
