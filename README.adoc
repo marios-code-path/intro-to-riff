@@ -168,6 +168,17 @@ Riff will publish 'GNIRPS' data to the 'reverse-in' topic. By
 specifying `--reply` in the riff command, we are requesting that riff 
 await for retured data to print to the console.
 
+== Scaling the function
+
+Riff uses the function-controller to replicate (or scale) your 
+functions as request rates increase, and decrease over time. 
+The default behavior implements replication factor equal to the number
+of partitions of the input topic. You can edit a topic resource
+by using `kubectl edit topic MY_TOPIC` command and 
+change `spec.partitions` to your needs. Alternately, the default 
+behavior can be modified by editing the function's configuration,
+setting `spec.maxReplicas` to a desired value.
+
 === Next Steps
 
 We've only begun to scratch the surface in this look at Project Riff. It would be worth in another
